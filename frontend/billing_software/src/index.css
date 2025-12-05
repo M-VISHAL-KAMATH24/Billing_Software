@@ -1,6 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-orange-50: oklch(0.98 0.05 70);
+  --color-orange-500: oklch(0.8 0.2 70);
+  --color-orange-600: oklch(0.7 0.2 70);
+  --color-red-500: oklch(0.75 0.2 25);
+  --color-red-600: oklch(0.65 0.2 25);
+  --color-green-100: oklch(0.95 0.05 140);
+  --color-green-600: oklch(0.6 0.15 140);
+  --color-gray-50: oklch(0.99 0 0);
+  --color-gray-100: oklch(0.97 0 0);
+  --color-gray-200: oklch(0.95 0 0);
+  --color-gray-300: oklch(0.93 0 0);
+  --color-gray-400: oklch(0.90 0 0);
+  --color-gray-500: oklch(0.85 0 0);
+  --color-gray-600: oklch(0.75 0 0);
+  --color-gray-700: oklch(0.65 0 0);
+  --color-gray-800: oklch(0.45 0 0);
+}
+
 
 @layer base {
   body {
