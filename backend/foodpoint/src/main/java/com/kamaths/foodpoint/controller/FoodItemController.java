@@ -29,7 +29,11 @@ public class FoodItemController {
     public ResponseEntity<List<FoodItem>> getAllFoodItems() {
         return ResponseEntity.ok(foodItemService.getAllFoodItems());
     }
-    
+
+    @GetMapping("/menu")
+public ResponseEntity<List<FoodItem>> getMenuItems() {
+    return ResponseEntity.ok(foodItemService.getAllFoodItems());
+}
     // ✅ NEW DELETE ENDPOINT
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFoodItem(@PathVariable Long id) {
