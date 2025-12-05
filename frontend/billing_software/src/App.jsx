@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import AddCategories from './pages/AddCategories'
+import Categories from './pages/Categories'
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<div className="text-2xl font-bold text-center mt-20">Home Page</div>} />
           <Route path="/add-categories" element={<AddCategories />} />
-          <Route path="/categories" element={<div className="text-2xl font-bold">Categories</div>} />
+          <Route path="/categories" element={<Categories/>}/>
           <Route path="/add-order" element={<div className="text-2xl font-bold">Add Order</div>} />
           <Route path="/orders" element={<div className="text-2xl font-bold">Orders</div>} />
           <Route path="/sales" element={<div className="text-2xl font-bold">Sales</div>} />

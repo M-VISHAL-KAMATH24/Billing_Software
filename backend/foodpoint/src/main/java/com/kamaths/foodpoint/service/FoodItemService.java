@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,9 +39,31 @@ public class FoodItemService {
         return foodItemRepository.save(foodItem);
     }
     
-    // ✅ ADD THIS METHOD
     public List<FoodItem> getAllFoodItems() {
         return foodItemRepository.findAll();
+    }
+    
+    // ✅ NEW DELETE METHOD
+    public boolean deleteFoodItem(Long id) {
+        Optional<FoodItem> foodItemOpt = foodItemRepository.findById(id);
+        if (foodItemOpt.isPresent()) {
+            FoodItem foodItem = foodItemOpt.get();
+            
+            // Delete image file if exists
+            if (foodItem.getImageUrl() != null && !foodItem.getImageUrl().isEmpty()) {
+                try {
+                    Path imagePath = Paths.get(uploadDir + foodItem.getImageUrl());
+                    Files.deleteIfExists(imagePath);
+                } catch (IOException e) {
+                    // Log but don't fail deletion if image can't be deleted
+                    System.err.println("Failed to delete image: " + foodItem.getImageUrl() + " - " + e.getMessage());
+                }
+            }
+            
+            foodItemRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
     
     private String saveImage(MultipartFile image) throws IOException {
