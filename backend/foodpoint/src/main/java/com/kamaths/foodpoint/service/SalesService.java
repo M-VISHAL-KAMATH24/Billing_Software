@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Service
@@ -17,9 +18,12 @@ public class SalesService {
         this.salesRepository = salesRepository;
     }
     
+    // ✅ THIS IS THE MISSING PIECE!
     public void addSale(Double amount) {
         if (amount != null && amount > 0) {
-            Sale sale = new Sale(amount);
+            Sale sale = new Sale();
+            sale.setAmount(amount);
+            sale.setCreatedAt(LocalDateTime.now());
             salesRepository.save(sale);
         }
     }
@@ -27,27 +31,31 @@ public class SalesService {
     public Double getTodaySales() {
         LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIN);
         LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
-        return salesRepository.sumAmountByCreatedAtBetween(startOfDay, endOfDay);
+        Double result = salesRepository.sumAmountByCreatedAtBetween(startOfDay, endOfDay);
+        return result != null ? result : 0.0;
     }
     
     public Double getTotalSales() {
-        return salesRepository.sumAmountByCreatedAtBetween(
-            LocalDateTime.now().minusYears(100), 
-            LocalDateTime.now()
-        );
+        Double result = salesRepository.sumAllAmount();
+        return result != null ? result : 0.0;
+    }
+    
+    public Double getMonthlySales() {
+        LocalDateTime startOfMonth = LocalDateTime.now()
+            .with(TemporalAdjusters.firstDayOfMonth())
+            .with(LocalTime.MIN);
+        LocalDateTime endOfMonth = LocalDateTime.now()
+            .with(TemporalAdjusters.lastDayOfMonth())
+            .with(LocalTime.MAX);
+        Double result = salesRepository.sumAmountByCreatedAtBetween(startOfMonth, endOfMonth);
+        return result != null ? result : 0.0;
     }
     
     public List<Sale> getRecentSales(int limit) {
-        return salesRepository.findAllByOrderByCreatedAtDesc().stream()
-            .limit(limit)
-            .toList();
+        return salesRepository.findAllByOrderByCreatedAtDesc();
     }
     
-    public List<Sale> getSalesByDateRange(LocalDateTime start, LocalDateTime end) {
-        return salesRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(start, end);
-    }
-    
-    public Double getSalesByDateRangeSum(LocalDateTime start, LocalDateTime end) {
-        return salesRepository.sumAmountByCreatedAtBetween(start, end);
+    public List<Object[]> getWeeklySalesTrend() {
+        return salesRepository.getWeeklySalesTrend();
     }
 }

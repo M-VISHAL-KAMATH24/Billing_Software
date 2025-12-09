@@ -6,6 +6,7 @@ import Categories from './pages/Categories'
 import AddOrders from './pages/AddOrders'
 import Orders from './pages/Orders'
 import HomePageSub from './pages/HomePageSub'
+import Sales from './pages/Sales'
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <Route path="/categories" element={<Categories/>}/>
           <Route path="/add-order" element={<AddOrders/>} />
           <Route path="/orders" element={<Orders/>}/>
-          <Route path="/sales" element={<div className="text-2xl font-bold">Sales</div>} />
+          <Route path="/sales" element={<Sales/>} />
         </Routes>
       </main>
     </Router>

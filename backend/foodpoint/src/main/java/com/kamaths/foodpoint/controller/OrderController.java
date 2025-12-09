@@ -19,7 +19,7 @@ public class OrderController {
         this.orderService = orderService;
     }
     
-    // ✅ EXISTING - AddOrders WORKS
+    // ✅ AddOrders WORKS
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request) {
         try {
@@ -31,19 +31,16 @@ public class OrderController {
         }
     }
     
-    // ✅ EXISTING - All orders (admin)
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
     
-    // ✅ EXISTING - Pending orders (Orders page) WORKS
     @GetMapping("/pending")
     public ResponseEntity<List<Order>> getPendingOrders() {
         return ResponseEntity.ok(orderService.getPendingOrders());
     }
     
-    // ✅ NEW - Add Items / Update Order
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody CreateOrderRequest request) {
         try {
@@ -58,7 +55,6 @@ public class OrderController {
         }
     }
     
-    // ✅ NEW - Delete Order
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         try {
@@ -70,7 +66,7 @@ public class OrderController {
         }
     }
     
-    // ✅ NEW - Mark Payment Done
+    // ✅ Mark Payment Done - WORKS PERFECTLY
     @PutMapping("/{id}/payment-done")
     public ResponseEntity<Order> markPaymentDone(@PathVariable Long id) {
         try {

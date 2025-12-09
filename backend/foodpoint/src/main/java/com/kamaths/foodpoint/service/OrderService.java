@@ -4,6 +4,7 @@ import com.kamaths.foodpoint.dto.CreateOrderRequest;
 import com.kamaths.foodpoint.entity.Order;
 import com.kamaths.foodpoint.entity.OrderItem;
 import com.kamaths.foodpoint.repository.OrderRepository;
+import com.kamaths.foodpoint.service.SalesService; // ✅ IMPORT
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,9 +15,12 @@ import java.util.Optional;
 public class OrderService {
     
     private final OrderRepository orderRepository;
+    private final SalesService salesService; // ✅ ADDED
     
-    public OrderService(OrderRepository orderRepository) {
+    // ✅ UPDATED CONSTRUCTOR
+    public OrderService(OrderRepository orderRepository, SalesService salesService) {
         this.orderRepository = orderRepository;
+        this.salesService = salesService;
     }
     
     // ✅ FIXED createOrder - SAFE null handling (WORKS)
@@ -46,7 +50,7 @@ public class OrderService {
                 newItems.add(item);
             });
         }
-        order.setOrderItems(newItems); // ✅ setOrderItems() instead of add()
+        order.setOrderItems(newItems);
         
         return orderRepository.save(order);
     }
@@ -96,15 +100,21 @@ public class OrderService {
         order.setPaymentMethod(request.getPaymentMethod());
         order.setNotes(request.getNotes());
         order.setTotalAmount(totalAmount);
-        order.setOrderItems(newItems); // ✅ Replaces entire collection - SAFE
+        order.setOrderItems(newItems);
         
         return orderRepository.save(order);
     }
     
+    // ✅ FIXED: AUTO-TRACK SALES ON MARK PAID
     public Order markPaymentDone(Long id) {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Order not found"));
+        
         order.setStatus("paid");
+        
+        // ✅ CRITICAL: Add to sales automatically
+        salesService.addSale(order.getTotalAmount());
+        
         return orderRepository.save(order);
     }
 }
