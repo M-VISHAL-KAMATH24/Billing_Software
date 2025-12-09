@@ -19,19 +19,69 @@ public class OrderController {
         this.orderService = orderService;
     }
     
+    // ✅ EXISTING - AddOrders WORKS
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request) {
-        Order order = orderService.createOrder(request);
-        return ResponseEntity.ok(order);
+        try {
+            Order order = orderService.createOrder(request);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
     }
     
+    // ✅ EXISTING - All orders (admin)
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
     
+    // ✅ EXISTING - Pending orders (Orders page) WORKS
     @GetMapping("/pending")
     public ResponseEntity<List<Order>> getPendingOrders() {
         return ResponseEntity.ok(orderService.getPendingOrders());
+    }
+    
+    // ✅ NEW - Add Items / Update Order
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody CreateOrderRequest request) {
+        try {
+            Order updatedOrder = orderService.updateOrder(id, request);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    
+    // ✅ NEW - Delete Order
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok("Order deleted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Failed to delete order");
+        }
+    }
+    
+    // ✅ NEW - Mark Payment Done
+    @PutMapping("/{id}/payment-done")
+    public ResponseEntity<Order> markPaymentDone(@PathVariable Long id) {
+        try {
+            Order order = orderService.markPaymentDone(id);
+            return ResponseEntity.ok(order);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

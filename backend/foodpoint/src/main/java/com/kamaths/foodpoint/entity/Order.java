@@ -2,6 +2,7 @@ package com.kamaths.foodpoint.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,12 +18,25 @@ public class Order {
     private String notes;
     private Double totalAmount;
     
+    // ✅ FIXED: Initialize with ArrayList + ElementCollection
     @ElementCollection
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>(); // ✅ INITIALIZED
     
     private LocalDateTime createdAt = LocalDateTime.now();
     private String status = "pending"; // pending, completed, cancelled
+    
+    // ✅ SAFE Getter
+    public List<OrderItem> getOrderItems() {
+        if (orderItems == null) {
+            orderItems = new ArrayList<>();
+        }
+        return orderItems;
+    }
+    
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
     
     // Getters & Setters
     public Long getId() { return id; }
@@ -42,9 +56,6 @@ public class Order {
     
     public Double getTotalAmount() { return totalAmount; }
     public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
-    
-    public List<OrderItem> getOrderItems() { return orderItems; }
-    public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
