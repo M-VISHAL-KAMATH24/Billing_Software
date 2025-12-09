@@ -1,4 +1,4 @@
-// src/pages/Sales.jsx - COMPLETE DASHBOARD
+// src/pages/Sales.jsx - COMPLETE DASHBOARD (LIGHT THEME)
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -13,41 +13,39 @@ export default function Sales() {
     fetchSalesData()
   }, [])
 
-  // Update the fetchSalesData function in Sales.jsx:
-const fetchSalesData = async () => {
-  try {
-    setLoading(true)
-    const [todayRes, totalRes, monthlyRes, recentRes] = await Promise.all([
-      axios.get('http://localhost:8080/api/sales/today'),
-      axios.get('http://localhost:8080/api/sales/total'),
-      axios.get('http://localhost:8080/api/sales/monthly'),
-      axios.get('http://localhost:8080/api/sales/recent')
-    ])
-    
-    setTodaySales(todayRes.data || 0)
-    setTotalSales(totalRes.data || 0)
-    setMonthlySales(monthlyRes.data || 0)
-    setSalesData(recentRes.data || [])
-  } catch (error) {
-    console.error('Sales fetch error:', error)
-  } finally {
-    setLoading(false)
-  }
-}
+  const fetchSalesData = async () => {
+    try {
+      setLoading(true)
+      const [todayRes, totalRes, monthlyRes, recentRes] = await Promise.all([
+        axios.get('http://localhost:8080/api/sales/today'),
+        axios.get('http://localhost:8080/api/sales/total'),
+        axios.get('http://localhost:8080/api/sales/monthly'),
+        axios.get('http://localhost:8080/api/sales/recent')
+      ])
 
+      setTodaySales(todayRes.data || 0)
+      setTotalSales(totalRes.data || 0)
+      setMonthlySales(monthlyRes.data || 0)
+      setSalesData(recentRes.data || [])
+    } catch (error) {
+      console.error('Sales fetch error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (loading) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center' 
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
-        <div style={{ 
-          color: 'white', 
-          fontSize: '2rem', 
+        <div style={{
+          color: '#334155',
+          fontSize: '2rem',
           textAlign: 'center',
           padding: '4rem'
         }}>
@@ -58,53 +56,56 @@ const fetchSalesData = async () => {
     )
   }
 
+  const maxAmount = salesData.length
+    ? Math.max(...salesData.map(d => d.amount))
+    : 1
+
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #1f2937 0%, #111827 50%, #1e293b 100%)',
-      color: 'white',
-      padding: '2rem 0',
-      position: 'relative',
-      overflowX: 'hidden'
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
+      color: '#0f172a',
+      padding: '2rem 0'
     }}>
       {/* Header */}
-      <div style={{ 
-        padding: '0 2rem 3rem', 
-        maxWidth: '1600px', 
+      <div style={{
+        padding: '0 2rem 3rem',
+        maxWidth: '1600px',
         margin: '0 auto',
         textAlign: 'center'
       }}>
-        <h1 style={{ 
-          fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', 
-          fontWeight: '900', 
-          background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+        <h1 style={{
+          fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+          fontWeight: '900',
+          background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           marginBottom: '1rem'
         }}>
           💰 Sales Dashboard
         </h1>
-        <p style={{ 
-          fontSize: '1.4rem', 
-          opacity: 0.9, 
-          maxWidth: '600px', 
-          margin: '0 auto' 
+        <p style={{
+          fontSize: '1.3rem',
+          color: '#475569',
+          maxWidth: '600px',
+          margin: '0 auto'
         }}>
           Real-time analytics for Kamaths Food Point
         </p>
-        <button 
+
+        <button
           onClick={fetchSalesData}
           style={{
             marginTop: '2rem',
             padding: '1rem 2.5rem',
-            background: 'linear-gradient(135deg, #10b981, #059669)',
+            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
             color: 'white',
             border: 'none',
             borderRadius: '50px',
             fontSize: '1.1rem',
             fontWeight: '700',
             cursor: 'pointer',
-            boxShadow: '0 10px 30px rgba(16,185,129,0.3)'
+            boxShadow: '0 10px 25px rgba(34,197,94,0.25)'
           }}
         >
           🔄 Refresh Data
@@ -112,170 +113,120 @@ const fetchSalesData = async () => {
       </div>
 
       <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 2rem' }}>
+
         {/* Stats Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-          gap: '2rem', 
-          marginBottom: '3rem' 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: '2rem',
+          marginBottom: '3rem'
         }}>
-          {/* Today Sales */}
-          <div style={{
-            background: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '2.5rem',
-            border: '1px solid rgba(255,255,255,0.1)',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '3rem', color: '#10b981', marginBottom: '1rem' }}>📅 Today</div>
-            <div style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: '900', color: 'white', marginBottom: '0.5rem' }}>
-              ₹{todaySales.toLocaleString()}
+          {[ 
+            { label: 'Today', value: todaySales, color: '#22c55e' },
+            { label: 'This Month', value: monthlySales, color: '#2563eb' },
+            { label: 'Lifetime', value: totalSales, color: '#f59e0b' }
+          ].map((card, i) => (
+            <div key={i} style={{
+              background: 'white',
+              borderRadius: '20px',
+              padding: '2.5rem',
+              border: '1px solid #e5e7eb',
+              textAlign: 'center',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+            }}>
+              <div style={{ fontSize: '2.8rem', color: card.color, marginBottom: '1rem' }}>
+                ₹
+              </div>
+              <div style={{
+                fontSize: 'clamp(2.2rem, 7vw, 3.5rem)',
+                fontWeight: '900',
+                marginBottom: '0.5rem'
+              }}>
+                ₹{card.value.toLocaleString()}
+              </div>
+              <div style={{ color: '#64748b', fontSize: '1.1rem' }}>
+                {card.label} Revenue
+              </div>
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '1.1rem' }}>Daily Revenue</div>
-          </div>
-
-          {/* Monthly Sales */}
-          <div style={{
-            background: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '2.5rem',
-            border: '1px solid rgba(255,255,255,0.1)',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '3rem', color: '#3b82f6', marginBottom: '1rem' }}>📊 This Month</div>
-            <div style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: '900', color: 'white', marginBottom: '0.5rem' }}>
-              ₹{monthlySales.toLocaleString()}
-            </div>
-            <div style={{ color: '#9ca3af', fontSize: '1.1rem' }}>Monthly Revenue</div>
-          </div>
-
-          {/* Total Sales */}
-          <div style={{
-            background: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '2.5rem',
-            border: '1px solid rgba(255,255,255,0.1)',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '3rem', color: '#f59e0b', marginBottom: '1rem' }}>💎 Lifetime</div>
-            <div style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: '900', color: 'white', marginBottom: '0.5rem' }}>
-              ₹{totalSales.toLocaleString()}
-            </div>
-            <div style={{ color: '#9ca3af', fontSize: '1.1rem' }}>All Time Revenue</div>
-          </div>
+          ))}
         </div>
 
+        {/* Charts Section */}
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
+
           {/* Sales Chart */}
           <div style={{
-            background: 'rgba(255,255,255,0.05)',
-            backdropFilter: 'blur(20px)',
+            background: 'white',
             borderRadius: '24px',
             padding: '2rem',
-            border: '1px solid rgba(255,255,255,0.1)'
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
           }}>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '2rem', color: 'white' }}>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              marginBottom: '2rem'
+            }}>
               💹 Daily Sales Trend (Last 10 Days)
             </h3>
-            <div style={{ 
-              height: '400px', 
-              position: 'relative',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '16px',
-              overflow: 'hidden'
+
+            <div style={{
+              height: '350px',
+              display: 'grid',
+              gridTemplateColumns: `repeat(${salesData.length}, 1fr)`,
+              gap: '10px',
+              alignItems: 'flex-end'
             }}>
-              {/* Chart Grid */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${salesData.length}, 1fr)`,
-                height: '100%',
-                gap: '2px',
-                padding: '2rem 1.5rem'
-              }}>
-                {salesData.map((sale, index) => {
-                  const heightPercent = Math.min((sale.amount / Math.max(...salesData.map(d => d.amount))) * 100, 100)
-                  return (
-                    <div key={sale.id} style={{ position: 'relative' }}>
-                      <div style={{
-                        width: '100%',
-                        height: `${heightPercent}%`,
-                        background: `linear-gradient(to top, #10b981, #059669)`,
-                        borderRadius: '4px 4px 0 0',
-                        position: 'relative',
-                        bottom: 0,
-                        transition: 'height 0.3s ease'
-                      }} />
-                      {index % 2 === 0 && (
-                        <div style={{
-                          position: 'absolute',
-                          bottom: '-2rem',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          fontSize: '0.8rem',
-                          color: '#9ca3af',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          Day {10-index}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-              {/* Chart Labels */}
-              <div style={{
-                position: 'absolute',
-                bottom: '1rem',
-                left: '2rem',
-                right: '2rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '0.85rem',
-                color: '#9ca3af'
-              }}>
-                <span>₹0</span>
-                <span>₹{Math.max(...salesData.map(d => d.amount)).toFixed(0)}</span>
-              </div>
+              {salesData.map((sale) => {
+                const heightPercent = (sale.amount / maxAmount) * 100
+                return (
+                  <div key={sale.id} style={{
+                    height: `${heightPercent}%`,
+                    background: 'linear-gradient(to top, #2563eb, #60a5fa)',
+                    borderRadius: '6px'
+                  }} />
+                )
+              })}
             </div>
           </div>
 
           {/* Recent Sales */}
           <div style={{
-            background: 'rgba(255,255,255,0.05)',
-            backdropFilter: 'blur(20px)',
+            background: 'white',
             borderRadius: '24px',
             padding: '2rem',
-            border: '1px solid rgba(255,255,255,0.1)',
-            height: 'fit-content'
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
           }}>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              marginBottom: '1.5rem'
+            }}>
               🕒 Recent Transactions
             </h3>
+
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
               {salesData.slice(0, 8).map((sale, index) => (
                 <div key={sale.id} style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '1.25rem 0',
-                  borderBottom: index < 7 ? '1px solid rgba(255,255,255,0.1)' : 'none',
-                  fontSize: '1rem'
+                  padding: '1rem 0',
+                  borderBottom: index < 7 ? '1px solid #e5e7eb' : 'none'
                 }}>
                   <div>
-                    <div style={{ fontWeight: '600', color: 'white', marginBottom: '0.25rem' }}>
+                    <div style={{ fontWeight: '600' }}>
                       Order #{sale.id}
                     </div>
-                    <div style={{ color: '#9ca3af', fontSize: '0.9rem' }}>
+                    <div style={{ fontSize: '0.9rem', color: '#64748b' }}>
                       {new Date(sale.createdAt).toLocaleDateString()}
                     </div>
                   </div>
-                  <div style={{ 
-                    fontSize: '1.3rem', 
-                    fontWeight: '800', 
-                    color: '#10b981' 
+                  <div style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '800',
+                    color: '#16a34a'
                   }}>
                     ₹{sale.amount.toFixed(0)}
                   </div>
@@ -285,54 +236,48 @@ const fetchSalesData = async () => {
           </div>
         </div>
 
-        {/* Growth Chart */}
+        {/* Weekly Growth */}
         <div style={{
-          background: 'rgba(255,255,255,0.05)',
-          backdropFilter: 'blur(20px)',
+          background: 'white',
           borderRadius: '24px',
           padding: '2.5rem',
-          border: '1px solid rgba(255,255,255,0.1)',
-          marginBottom: '3rem'
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
         }}>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '2rem', color: 'white' }}>
+          <h3 style={{
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            marginBottom: '2rem'
+          }}>
             📈 Weekly Growth (This Month)
           </h3>
-          <div style={{ height: '300px', position: 'relative' }}>
-            {/* Mock growth bars */}
-            <div style={{
-              display: 'flex',
-              height: '100%',
-              gap: '1rem',
-              alignItems: 'flex-end',
-              padding: '2rem 1rem'
-            }}>
-              {[1200, 1800, 1450, 2200, 1950, 2800, 2450].map((value, index) => {
-                const heightPercent = (value / 2800) * 80
-                return (
-                  <div key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column-reverse' }}>
-                    <div style={{
-                      width: '100%',
-                      height: `${heightPercent}%`,
-                      background: index % 2 === 0 ? 
-                        'linear-gradient(to top, #10b981, #059669)' : 
-                        'linear-gradient(to top, #3b82f6, #1d4ed8)',
-                      borderRadius: '8px 8px 0 0',
-                      marginBottom: '0.5rem'
-                    }} />
-                    <div style={{ 
-                      textAlign: 'center', 
-                      fontSize: '0.8rem', 
-                      color: '#9ca3af',
-                      fontWeight: '600'
-                    }}>
-                      Week {index + 1}
-                    </div>
+
+          <div style={{ height: '260px', display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+            {[1200, 1800, 1450, 2200, 1950, 2800, 2450].map((value, index) => {
+              const heightPercent = (value / 2800) * 80
+              return (
+                <div key={index} style={{ flex: 1 }}>
+                  <div style={{
+                    height: `${heightPercent}%`,
+                    background: index % 2 === 0
+                      ? 'linear-gradient(to top, #22c55e, #4ade80)'
+                      : 'linear-gradient(to top, #2563eb, #60a5fa)',
+                    borderRadius: '8px'
+                  }} />
+                  <div style={{
+                    textAlign: 'center',
+                    fontSize: '0.9rem',
+                    marginTop: '0.5rem',
+                    color: '#64748b'
+                  }}>
+                    Week {index + 1}
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
         </div>
+
       </div>
     </div>
   )
